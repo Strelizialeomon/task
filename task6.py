@@ -33,31 +33,26 @@ def find_matching_properties(props: List[Property], house_importance: dict) -> L
     and returns a list of Property objects that match the user's request
     """
     # TODO: Step 2 - Define this method to return a list of matching properties
-    source_type = {
-        'suburb': 'property.get_suburb()',
-        'prop_type': 'property.get_prop_type()',
-        'bedrooms': 'property.get_bedrooms()',
-        'bathrooms': 'property.get_bathrooms()',
-        'parking_spaces': 'property.get_parking_spaces()',
-        'price': 'property.get_price()',
-        'property_features': 'property.get_property_features()'
-    }
     matched = []
     try:
         for property in props:
-            is_match = False
-            for key in house_importance.keys():
-                property.get_property_features()
-                if key in ['suburb', 'prop_type'] and eval(source_type[key]) != house_importance[key]:
-                    break
-                if key == 'property_features' and house_importance[key] not in eval(source_type[key]):
-                    break
-                if key not in ['suburb', 'prop_type', 'property_features'] and eval(source_type[key]) < \
-                        house_importance[key]:
-                    break
-                is_match = True
-            if is_match:
-                matched.append(property)
+            suburb = property.get_suburb()
+            prop_type = property.get_prop_type()
+            bedrooms = property.get_bedrooms()
+            bathrooms = property.get_bathrooms()
+            parking_spaces = property.get_parking_spaces()
+            price = property.get_price()
+            property_features = property.get_property_features()
+            if suburb != house_importance['suburb'] or prop_type != house_importance['prop_type']:
+                continue
+            if house_importance['property_features'] not in property_features:
+                continue
+            if bedrooms < house_importance['bedrooms'] or bathrooms < house_importance['bathrooms'] or parking_spaces < \
+                    house_importance['parking_spaces']:
+                continue
+            if price > house_importance['price']:
+                continue
+            matched.append(property)
         return matched
     except Exception as e:
         print(e)
